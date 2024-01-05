@@ -17,15 +17,6 @@ Resources:
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- [[ Configure Copilot ]]
--- vim.g.copilot_assume_mapped = true
--- vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-vim.keymap.set('i', '<C-J>', 'copilot#Accept("<CR>")', {
-  expr = true,
-  replace_keycodes = false
-})
-vim.g.copilot_no_tab_map = true
-
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -77,7 +68,19 @@ require('lazy').setup({
     },
   },
   -- Github Copilot
-  'github/copilot.vim',
+  -- official plugin: 'github/copilot.vim',
+  --
+  -- opting for lua version because
+  -- it plays more nicely with cmp
+  --
+  -- zbirenbaum/copilot-cmp is also worth checking out
+  { 'zbirenbaum/copilot.lua',
+      cmd = "Copilot",
+      event = "InsertEnter",
+      config = function()
+        require("copilot").setup({})
+      end,
+  },
 
   {
     -- Autocompletion
@@ -553,7 +556,9 @@ local servers = {
   clangd = {
       filetypes = { "cpp" }
   },
-  -- gopls = {},
+  gopls = {
+    filetypes = { "go" }
+  },
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
@@ -646,4 +651,4 @@ cmp.setup {
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+-- vim: ts=2 sts=2 sw=2 et ai
